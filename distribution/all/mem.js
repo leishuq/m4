@@ -15,18 +15,18 @@ let mem = (config) => {
   // }
   return {
     put: (user, key, callback) => {
-      // const KID = id.getID(key);
-      // context.hash();
-      // const remote = {
-      //   service: 'mem',
-      //   method: 'put',
-      // };
-      // local.mem.put(user, key, (e, v) => {
-      //   if (e) {
-      //     return callback(e, null);
-      //   } else {
-      //   }
-      // });
+      const KID = id.getID(key);
+      context.hash();
+      const remote = {
+        service: 'mem',
+        method: 'put',
+      };
+      local.mem.put(user, key, (e, v) => {
+        if (e) {
+          return callback(e, null);
+        } else {
+        }
+      });
     },
 
     get: (key, callback) => {

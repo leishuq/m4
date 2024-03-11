@@ -14,7 +14,7 @@ const id = require('../util/id');
 const fs = require('fs');
 const path = require('path');
 
-const dirName = '/usr/src/app/m4/data';
+const dirName = '/usr/src/app/m4';
 
 if (!fs.existsSync(dirName)) {
   fs.mkdirSync(dirName); // Create the directory if it does not exist
