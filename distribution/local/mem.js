@@ -24,18 +24,17 @@ mem.get = function (key, callback) {
   if (key == null) {
     let keysArr = [...keymap.keys()];
     return callback(null, keysArr);
-  } else if (!hashmap.has(key)) {
+  } else if (!hashmap.has(id.getID(key))) {
     return callback(new Error(), null);
   } else {
-    const KID = id.getID(key);
-    return callback(null, hashmap.get(KID));
+    return callback(null, hashmap.get(id.getID(key)));
   }
 };
 
-mem.delete = function (key, callback) {
+mem.del = function (key, callback) {
   callback = callback || function () {};
 
-  if (key == null || !hashmap.has(key)) {
+  if (key == null || !hashmap.has(id.getID(key))) {
     return callback(new Error(), null);
   } else {
     const KID = id.getID(key);
@@ -45,3 +44,5 @@ mem.delete = function (key, callback) {
     return callback(null, user);
   }
 };
+
+module.exports = mem;
