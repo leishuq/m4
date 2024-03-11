@@ -1,6 +1,7 @@
 const local = require('../local/local');
 const utils = require('../util/util');
 const id = require('../util/id');
+const distribution = require('../../distribution');
 
 let context = {};
 
@@ -15,18 +16,18 @@ let mem = (config) => {
   // }
   return {
     put: (user, key, callback) => {
-      const KID = id.getID(key);
-      context.hash();
-      const remote = {
-        service: 'mem',
-        method: 'put',
-      };
-      local.mem.put(user, key, (e, v) => {
-        if (e) {
-          return callback(e, null);
-        } else {
-        }
-      });
+      // distribution[context.gid].groups.get(context.gid, (e, v) => {
+      //   if(e){
+      //     return callback(new Error('group get failed'), null);
+      //   } else {
+      //     //v is list of nodes in the group
+      //     const KID = id.getID(key);
+      //     // NID?
+      //     context.hash(KID, )
+      //   }
+      // })
+      // context.hash();
+      // // call
     },
 
     get: (key, callback) => {
