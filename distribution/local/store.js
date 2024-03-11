@@ -14,6 +14,7 @@ const id = require('../util/id');
 const fs = require('fs');
 const path = require('path');
 
+const conf = id.getNID(global.nodeConfig);
 const dirName = '/usr/src/app/m4';
 
 if (!fs.existsSync(dirName)) {
@@ -23,7 +24,12 @@ if (!fs.existsSync(dirName)) {
 function getFilePath(key) {
   // Replace non-alphanumeric characters with underscores to avoid filesystem issues
   const safeKey = key.replace(/[^a-z0-9]/gi, '_');
-  return path.join(dirName, safeKey);
+  const groupDir = path.join(dirName, conf);
+  if (!fs.existsSync(groupDir)) {
+    fs.mkdirSync(groupDir); // Create the directory if it does not exist
+  }
+  const finalPath = path.join(groupDir, safeKey);
+  return finalPath;
 }
 
 const store = {};
