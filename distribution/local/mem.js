@@ -2,46 +2,65 @@ const id = require('../util/id');
 
 const mem = {};
 
-let hashmap = new Map();
-let keymap = new Map();
+let groupMap = new Map();
+groupMap.set('local', new Map());
 
 mem.put = function (user, key, callback) {
+  let gid = 'local'; // Default group id is 'local'
+
   if (key == null) {
     key = id.getID(user);
+  } else if (typeof key === 'object' && key !== null) {
+    gid = key.gid || gid;
+    key = key.key;
   }
-  const KID = id.getID(key);
-  hashmap.set(KID, user);
-  keymap.set(key, KID);
+
+  // Ensure the group exists in the groupMap
+  if (!groupMap.has(gid)) {
+    groupMap.set(gid, new Map());
+  }
+
+  groupMap.get(gid).set(key, user);
+
   callback = callback || function () {};
 
-  return callback(null, user); // return the group of nodes
+  return callback(null, user);
 };
 
 mem.get = function (key, callback) {
+  let gid = 'local';
   callback = callback || function () {};
 
-  // if no key, return all the keys in the map
   if (key == null) {
-    let keysArr = [...keymap.keys()];
-    return callback(null, keysArr);
-  } else if (!hashmap.has(id.getID(key))) {
-    return callback(new Error(), null);
+    const map = groupMap.get(gid);
+    return callback(null, [...map.keys()]);
+  } else if (typeof key === 'object' && key !== null) {
+    gid = key.gid || gid;
+    key = key.key;
+  }
+
+  if (groupMap.has(gid) && groupMap.get(gid).has(key)) {
+    return callback(null, groupMap.get(gid).get(key));
   } else {
-    return callback(null, hashmap.get(id.getID(key)));
+    return callback(new Error('Key not found'), null);
   }
 };
 
 mem.del = function (key, callback) {
+  let gid = 'local';
   callback = callback || function () {};
 
-  if (key == null || !hashmap.has(id.getID(key))) {
-    return callback(new Error(), null);
-  } else {
-    const KID = id.getID(key);
-    const user = hashmap.get(KID);
-    hashmap.delete(KID);
-    keymap.delete(key);
+  if (typeof key === 'object' && key !== null) {
+    gid = key.gid || gid;
+    key = key.key;
+  }
+
+  if (groupMap.has(gid) && groupMap.get(gid).has(key)) {
+    const user = groupMap.get(gid).get(key);
+    groupMap.get(gid).delete(key);
     return callback(null, user);
+  } else {
+    return callback(new Error('Key not found for deletion'), null);
   }
 };
 
