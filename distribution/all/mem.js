@@ -1,7 +1,5 @@
 const local = require('../local/local');
-const utils = require('../util/util');
 const id = require('../util/id');
-const distribution = require('../../distribution');
 
 let mem = (config) => {
   let context = {}; // Ensure context is encapsulated within each service instance
@@ -24,11 +22,13 @@ let mem = (config) => {
       if (key === null) {
         const remote = {service: 'mem', method: 'get'};
 
-        distribution[context.gid].comm.send([user, key], remote, (e, v) => {
+        global.distribution[context.gid].groups.get(context.gid, (e, v) => {
+          // all the nodes in this gid
           if (e) {
-            return callback(new Error('Failed to call service'), null);
+            return callback(new Error(), null);
+          } else {
+            console.log(v, '!!!');
           }
-          console.log(v, '!!!');
         });
       } else {
         const KID = id.getID(key);
@@ -56,11 +56,8 @@ let mem = (config) => {
     },
 
     reconf: (newConfig, callback) => {
-      // This method would handle reconfiguration logic, such as updating the hash function or the list of nodes.
       callback = callback || function () {};
-      // Example: Update context based on newConfig
       if (newConfig.hash) context.hash = newConfig.hash;
-      // More reconfiguration logic here
       callback(null, 'Reconfiguration done');
     },
   };

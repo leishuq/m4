@@ -31,7 +31,7 @@ mem.get = function (key, callback) {
   let gid = 'local';
   callback = callback || function () {};
 
-  if (key == null) {
+  if (key === null) {
     const map = groupMap.get(gid);
     return callback(null, [...map.keys()]);
   } else if (typeof key === 'object' && key !== null) {
