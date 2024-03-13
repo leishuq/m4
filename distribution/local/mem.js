@@ -34,9 +34,12 @@ mem.get = function (key, callback) {
   if (key === null) {
     const map = groupMap.get(gid);
     return callback(null, [...map.keys()]);
-  } else if (typeof key === 'object' && key !== null) {
+  } else if (typeof key === 'object' && key.key !== null) {
     gid = key.gid || gid;
     key = key.key;
+  } else if (typeof key === 'object' && key.key === null) {
+    const group = groupMap.get(key.gid);
+    return callback(null, Array.from(group.keys()));
   }
 
   if (groupMap.has(gid) && groupMap.get(gid).has(key)) {

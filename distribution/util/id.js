@@ -19,7 +19,6 @@ function getSID(node) {
   return getNID(node).substring(0, 5);
 }
 
-
 function idToNum(id) {
   let n = parseInt(id, 16);
   assert(!isNaN(n), 'idToNum: id is not in KID form!');
@@ -32,10 +31,27 @@ function naiveHash(kid, nids) {
 }
 
 function consistentHash(kid, nids) {
+  const KID = idToNum(kid);
+  const nidsArr = nids.map((nid) => ({
+    id: nid,
+    hash: idToNum(nid),
+  }));
+  nidsArr.sort((a, b) => a.hash - b.hash);
+  for (const nid in nidsArr) {
+    if (nid >= KID) {
+      return nid.id;
+    }
+  }
+  return nidsArr[0].id;
 }
 
-
 function rendezvousHash(kid, nids) {
+  const nidsArr = nids.map((nid) => ({
+    id: nid,
+    hash: getID(kid + nid),
+  }));
+  nidsArr.sort((a, b) => idToNum(a.hash) - idToNum(b.hash));
+  return nidsArr[nidsArr.length - 1].id;
 }
 
 module.exports = {
