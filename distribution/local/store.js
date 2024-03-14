@@ -2,13 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const id = require('../util/id');
 
-// Assuming global.nodeConfig is already defined as per the handout
 const conf = id.getNID(global.nodeConfig);
 const dirName = path.join(__dirname, '../../store', conf);
 
-// Ensure the storage directory exists
 if (!fs.existsSync(dirName)) {
-  fs.mkdirSync(dirName, {recursive: true}); // Use recursive to create intermediate directories
+  fs.mkdirSync(dirName, {recursive: true});
 }
 
 function getFilePath(gid, key) {
@@ -18,9 +16,9 @@ function getFilePath(gid, key) {
 
 const store = {};
 
-store.put = function (user, key, callback) {
-  let gid;
-  callback = callback || function () {};
+store.put = function(user, key, callback) {
+  let gid = 'local';
+  callback = callback || function() {};
 
   if (key === null) {
     key = id.getID(user);
@@ -42,24 +40,23 @@ store.put = function (user, key, callback) {
   });
 };
 
-store.get = function (key, callback) {
-  callback = callback || function () {};
+store.get = function(key, callback) {
+  callback = callback || function() {};
 
   if (key === null) {
-    // List all files in the directory as keys
-    fs.readdir(dirName, (err, files) => {
+    fs.readdir(path.join(dirName, 'local'), (err, files) => {
       if (err) {
         return callback(err);
       }
       return callback(
-        null,
-        files.map((file) => file.replace(/_/g, '.')),
+          null,
+          files.map((file) => file.replace(/_/g, '.')),
       );
     });
   } else if (typeof key === 'object' && key.key !== null) {
     const filePath = getFilePath(key.gid, key.key);
     if (!fs.existsSync(filePath)) {
-      fs.mkdirSync(filePath, {recursive: true}); // Use recursive to create intermediate directories
+      fs.mkdirSync(filePath, {recursive: true});
     }
     fs.readFile(filePath, (err, data) => {
       if (err) {
@@ -70,21 +67,21 @@ store.get = function (key, callback) {
   } else if (typeof key === 'object' && key.key === null) {
     const p = path.join(dirName, key.gid);
     if (!fs.existsSync(p)) {
-      fs.mkdirSync(p, {recursive: true}); // Use recursive to create intermediate directories
+      fs.mkdirSync(p, {recursive: true});
     }
     fs.readdir(p, (err, files) => {
       if (err) {
         return callback(err);
       }
       return callback(
-        null,
-        files.map((file) => file.replace(/_/g, '.')),
+          null,
+          files.map((file) => file.replace(/_/g, '.')),
       );
     });
   } else {
     const filePath = getFilePath('local', key);
     if (!fs.existsSync(filePath)) {
-      fs.mkdirSync(filePath, {recursive: true}); // Use recursive to create intermediate directories
+      fs.mkdirSync(filePath, {recursive: true});
     }
     fs.readFile(filePath, (err, data) => {
       if (err) {
@@ -94,8 +91,9 @@ store.get = function (key, callback) {
     });
   }
 };
-store.del = function (key, callback) {
-  callback = callback || function () {};
+
+store.del = function(key, callback) {
+  callback = callback || function() {};
   let filePath;
   if (typeof key === 'object' && key.key !== null) {
     filePath = getFilePath(key.gid, key.key);

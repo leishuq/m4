@@ -1,7 +1,7 @@
 const id = require('../util/id');
 
 let mem = (config) => {
-  let context = {}; // Ensure context is encapsulated within each service instance
+  let context = {};
   context.gid = config.gid || 'all';
   context.hash = config.hash || id.naiveHash;
   return {
@@ -17,9 +17,9 @@ let mem = (config) => {
         const nid = context.hash(KID, Object.keys(nodes));
         const remote = {node: nodes[nid], service: 'mem', method: 'put'};
         distribution.local.comm.send(
-          [user, {key: key, gid: context.gid}],
-          remote,
-          callback, //?
+            [user, {key: key, gid: context.gid}],
+            remote,
+            callback, // ?
         );
       });
     },
@@ -29,11 +29,11 @@ let mem = (config) => {
         const remote = {service: 'mem', method: 'get'};
 
         global.distribution[context.gid].comm.send(
-          [{key: key, gid: context.gid}],
-          remote,
-          (e, v) => {
-            callback(e, Object.values(v).flat());
-          },
+            [{key: key, gid: context.gid}],
+            remote,
+            (e, v) => {
+              callback(e, Object.values(v).flat());
+            },
         );
       } else {
         const KID = id.getID(key);
@@ -44,9 +44,9 @@ let mem = (config) => {
           const nid = context.hash(KID, Object.keys(nodes));
           const remote = {node: nodes[nid], service: 'mem', method: 'get'};
           distribution.local.comm.send(
-            [{key: key, gid: context.gid}],
-            remote,
-            callback,
+              [{key: key, gid: context.gid}],
+              remote,
+              callback,
           );
         });
       }
@@ -61,15 +61,15 @@ let mem = (config) => {
         const nid = context.hash(KID, Object.keys(nodes));
         const remote = {node: nodes[nid], service: 'mem', method: 'del'};
         distribution.local.comm.send(
-          [{key: key, gid: context.gid}],
-          remote,
-          callback,
+            [{key: key, gid: context.gid}],
+            remote,
+            callback,
         );
       });
     },
 
     reconf: (newConfig, callback) => {
-      callback = callback || function () {};
+      callback = callback || function() {};
       if (newConfig.hash) context.hash = newConfig.hash;
       callback(null, 'Reconfiguration done');
     },
