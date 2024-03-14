@@ -12,11 +12,11 @@ let store = (config) => {
         const remote = {service: 'store', method: 'get'};
 
         global.distribution[context.gid].comm.send(
-            [{key: key, gid: context.gid}],
-            remote,
-            (e, v) => {
-              callback(e, Object.values(v).flat());
-            },
+          [{key: key, gid: context.gid}],
+          remote,
+          (e, v) => {
+            callback(e, Object.values(v).flat());
+          },
         );
       } else {
         let KID;
@@ -30,9 +30,9 @@ let store = (config) => {
           const remote = {node: nodes[nid], service: 'store', method: 'get'};
           console.log(key, 'getting from ', nodes[nid]);
           global.distribution.local.comm.send(
-              [{key: key, gid: context.gid}],
-              remote,
-              callback,
+            [{key: key, gid: context.gid}],
+            remote,
+            callback,
           );
         });
       }
@@ -51,9 +51,9 @@ let store = (config) => {
         console.log('current gid put', context.gid, nodes);
         console.log(key, 'putting to ', nodes[nid]);
         global.distribution.local.comm.send(
-            [user, {key: key, gid: context.gid}],
-            remote,
-            callback,
+          [user, {key: key, gid: context.gid}],
+          remote,
+          callback,
         );
       });
     },
@@ -66,9 +66,9 @@ let store = (config) => {
         const nid = context.hash(KID, Object.keys(nodes));
         const remote = {node: nodes[nid], service: 'store', method: 'del'};
         global.distribution.local.comm.send(
-            [{key: key, gid: context.gid}],
-            remote,
-            callback,
+          [{key: key, gid: context.gid}],
+          remote,
+          callback,
         );
       });
     },
