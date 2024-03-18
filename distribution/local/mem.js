@@ -5,7 +5,7 @@ const mem = {};
 let groupMap = new Map();
 groupMap.set('local', new Map());
 
-mem.put = function(user, key, callback) {
+mem.put = function (user, key, callback) {
   let gid = 'local'; // Default group id is 'local'
 
   if (key == null) {
@@ -22,14 +22,14 @@ mem.put = function(user, key, callback) {
 
   groupMap.get(gid).set(key, user);
 
-  callback = callback || function() {};
+  callback = callback || function () {};
 
   return callback(null, user);
 };
 
-mem.get = function(key, callback) {
+mem.get = function (key, callback) {
   let gid = 'local';
-  callback = callback || function() {};
+  callback = callback || function () {};
 
   if (key === null) {
     const map = groupMap.get(gid);
@@ -49,9 +49,9 @@ mem.get = function(key, callback) {
   }
 };
 
-mem.del = function(key, callback) {
+mem.del = function (key, callback) {
   let gid = 'local';
-  callback = callback || function() {};
+  callback = callback || function () {};
 
   if (typeof key === 'object' && key !== null) {
     gid = key.gid || gid;
