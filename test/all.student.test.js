@@ -85,23 +85,23 @@ beforeAll((done) => {
       groupsTemplate(mygroupConfig).put(mygroupConfig, mygroupGroup, (e, v) => {
         groupsTemplate(group1Config).put(group1Config, group1Group, (e, v) => {
           groupsTemplate(group2Config).put(
-            group2Config,
-            group2Group,
-            (e, v) => {
-              groupsTemplate(group3Config).put(
-                group3Config,
-                group3Group,
-                (e, v) => {
-                  groupsTemplate(group4Config).put(
-                    group4Config,
-                    group4Group,
+              group2Config,
+              group2Group,
+              (e, v) => {
+                groupsTemplate(group3Config).put(
+                    group3Config,
+                    group3Group,
                     (e, v) => {
-                      done();
+                      groupsTemplate(group4Config).put(
+                          group4Config,
+                          group4Group,
+                          (e, v) => {
+                            done();
+                          },
+                      );
                     },
-                  );
-                },
-              );
-            },
+                );
+              },
           );
         });
       });
